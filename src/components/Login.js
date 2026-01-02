@@ -4,14 +4,12 @@ import { B_Logo } from '../utils/constants'
 import {signUpValidation} from '../utils/validation'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../utils/firebase"
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addUser } from '../utils/userSlice';
 
 
 const Login = () => {
     const disPatch = useDispatch();
-    const navigate = useNavigate();
     const [isSignIn, setIsSignIn] = useState(true);
     const [errorMsg, setErrorMsg] = useState(null);
     const name      = useRef(null);
@@ -39,7 +37,6 @@ const Login = () => {
                             photoURL : photoURL
                         })
                     );   
-                     navigate("./browse");
                     }).catch((error) => {
                         setErrorMsg(error.message)
                      });
@@ -55,8 +52,6 @@ const Login = () => {
                 signInWithEmailAndPassword(auth, email.current.value,password.current.value)
                 .then((userCredential) => {
                     // Signed in 
-                    const user = userCredential.user;
-                    navigate("./browse");
                 })
                 .catch((error) => {
                     const errorCode = error.code;
