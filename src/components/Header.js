@@ -1,18 +1,19 @@
 import React, { useEffect } from 'react'
-import { Logo } from "../utils/constants"
+import { Logo, SUPPORTED_LANGUAGE } from "../utils/constants"
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from '../utils/firebase';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addUser, removeUser } from '../utils/userSlice';
-
-
+import { toggleGptSeachView } from '../utils/gptSlice';
+import { changeLanguage } from '../utils/configSlice';
 
 const Header = () => {
-
-  const disPatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector(store => store.user)
+  const user = useSelector(store => store.user);
+  const toggleview = useSelector(store => store.gpt.showGptSearch)
+   
   const handleSignout = () => {
   signOut(auth).then(() => {
 
@@ -24,7 +25,7 @@ const Header = () => {
         const unSuscribe = onAuthStateChanged(auth, (user) => {
               if (user) {
                 const { uid, email, displayName, photoURL } = user;
-                disPatch(
+                dispatch(
                   addUser({
                     uid: uid, 
                     email: email, 
@@ -35,7 +36,7 @@ const Header = () => {
                 )
                 navigate("/browse");
               } else {
-                disPatch(removeUser());
+                dispatch(removeUser());
                 navigate("/")
               }
             });
@@ -43,13 +44,29 @@ const Header = () => {
             // unSuscribe for component unmount
             return () => unSuscribe();
   
-      }, [disPatch,navigate])
+      }, [dispatch,navigate]);
+
+    const handleGptSearch = () => {
+        dispatch(toggleGptSeachView());
+        dispatch(changeLanguage("en"));
+    };
+
+    const handleLanguageSelection = (e) =>{
+      dispatch(changeLanguage(e.target.value));
+    }
 
   return (
     <div className='flex absolute w-screen px-8 py-2 bg-gradient-to-b from-black z-10 justify-between'>
         <img src={Logo} className='w-44' alt='logo' />
         { user && (
           <div className='flex p-2'>
+            {toggleview && (
+            <select className='p-2 bg-gray-900 text-white' onChange={handleLanguageSelection} >
+              {SUPPORTED_LANGUAGE.map(lang=><option key={lang.key} value={lang.key}>{lang.name}</option>)}
+            </select>
+          ) }
+          <button className='py-2 px-4 mx-4 my-2 bg-purple-700 text-white rounded-lg' onClick={handleGptSearch}>
+            {toggleview?"Home":"Gpt Search" }</button>
             <p className='flex font-bold text-red-600 justify-between'>{user?.displayName}</p>
             <button className='flex font-bold text-white' onClick={handleSignout}> - (Signout)</button>
           </div>

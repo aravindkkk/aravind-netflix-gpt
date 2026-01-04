@@ -6,8 +6,16 @@ export const API_OPTIONS = {
   method: 'GET',
   headers: {
     accept: 'application/json',
-    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NmExYmZmMzllMjcxYjVjMzZjMWVhMmZiYWUzNzdhZiIsIm5iZiI6MTc2NzI1MzQ1Ny44NDYwMDAyLCJzdWIiOiI2OTU2MjVkMTc2MDFhNTMxODM4OGYwNTQiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.Ytywbay6Kj3fH7QdJXc8IzXBjOAYWtgXvYbawUtuJH8'
+    Authorization: 'Bearer '+process.env.REACT_APP_TMDB_KEY
   }
 };
 
-export const IMG_CARD_URL = "https://image.tmdb.org/t/p/w500"
+export const IMG_CARD_URL = "https://image.tmdb.org/t/p/w500";
+
+export const SUPPORTED_LANGUAGE = [
+  {key:'en', name:'English'},
+  {key:'tn', name:'Tamil'},
+  {key:'hindi', name:'Hindi'}
+];
+
+export const CHATGPT_API_KEY = process.env.REACT_APP_CHAT_KEY
